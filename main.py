@@ -22,10 +22,10 @@ def info() -> typing.Dict:
 
     return {
         "apiversion": "1",
-        "author": "",  # TODO: Your Battlesnake Username
-        "color": "#888888",  # TODO: Choose color
-        "head": "default",  # TODO: Choose head
-        "tail": "default",  # TODO: Choose tail
+        "author": "daydin",
+        "color": "#EE8E0C",
+        "head": "bendr",
+        "tail": "freckled",
     }
 
 
@@ -43,8 +43,12 @@ def end(game_state: typing.Dict):
 # Valid moves are "up", "down", "left", or "right"
 # See https://docs.battlesnake.com/api/example-move for available data
 def move(game_state: typing.Dict) -> typing.Dict:
-
-    is_move_safe = {"up": True, "down": True, "left": True, "right": True}
+    is_move_safe = {
+        "up": True,
+        "down": True,
+        "left": True,
+        "right": True
+    }
 
     # We've included code to prevent your Battlesnake from moving backwards
     my_head = game_state["you"]["body"][0]  # Coordinates of your head
@@ -52,32 +56,60 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     if my_neck["x"] < my_head["x"]:  # Neck is left of head, don't move left
         is_move_safe["left"] = False
-
+        print("neck left of head")
     elif my_neck["x"] > my_head["x"]:  # Neck is right of head, don't move right
         is_move_safe["right"] = False
-
+        print("neck right of head")
     elif my_neck["y"] < my_head["y"]:  # Neck is below head, don't move down
         is_move_safe["down"] = False
-
+        print("neck below head")
     elif my_neck["y"] > my_head["y"]:  # Neck is above head, don't move up
         is_move_safe["up"] = False
-
+        print("neck above head")
     # TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
-    # board_width = game_state['board']['width']
-    # board_height = game_state['board']['height']
+    board_width = game_state['board']['width']
+    board_height = game_state['board']['height']
+
+    if my_head['x'] == board_width - 1:
+        is_move_safe['right'] = False
+        print("board to the right of head")
+    elif my_head['x'] == 0:
+        is_move_safe['left'] = False
+        print("board to the left of head")
+    if my_head['y'] == board_height - 1:
+        is_move_safe['up'] = False
+        print("board above head")
+    elif my_head['y'] == 0:
+        is_move_safe['down'] = False
+        print("board below head")
 
     # TODO: Step 2 - Prevent your Battlesnake from colliding with itself
-    # my_body = game_state['you']['body']
+    my_body = game_state['you']['body']
 
+    for i, body_part in enumerate(my_body):
+        if i > 1:
+            if (my_head['x'] == body_part['x'] - 1 and my_head['y'] == body_part['y']):
+                is_move_safe['right'] = False
+                print("body right of head")
+            elif (my_head['x'] == body_part['x'] + 1 and my_head['y'] == body_part['y']):
+                is_move_safe['left'] = False
+                print("body left of head")
+            if (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] - 1):
+                is_move_safe['up'] = False
+                print("body above head")
+            elif (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] + 1):
+                is_move_safe['down'] = False
+                print("body below head")
     # TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     # opponents = game_state['board']['snakes']
-
+    print('is move safe?: ', is_move_safe)
     # Are there any safe moves left?
     safe_moves = []
     for move, isSafe in is_move_safe.items():
         if isSafe:
             safe_moves.append(move)
 
+    # todo: need to reset the unsafe flags after each move
     if len(safe_moves) == 0:
         print(f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
         return {"move": "down"}
@@ -96,4 +128,9 @@ def move(game_state: typing.Dict) -> typing.Dict:
 if __name__ == "__main__":
     from server import run_server
 
-    run_server({"info": info, "start": start, "move": move, "end": end})
+    run_server({
+        "info": info,
+        "start": start,
+        "move": move,
+        "end": end
+    })
