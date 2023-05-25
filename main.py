@@ -57,13 +57,13 @@ def move(game_state: typing.Dict) -> typing.Dict:
     if my_neck["x"] < my_head["x"]:  # Neck is left of head, don't move left
         is_move_safe["left"] = False
         print("neck left of head")
-    elif my_neck["x"] > my_head["x"]:  # Neck is right of head, don't move right
+    if my_neck["x"] > my_head["x"]:  # Neck is right of head, don't move right
         is_move_safe["right"] = False
         print("neck right of head")
-    elif my_neck["y"] < my_head["y"]:  # Neck is below head, don't move down
+    if my_neck["y"] < my_head["y"]:  # Neck is below head, don't move down
         is_move_safe["down"] = False
         print("neck below head")
-    elif my_neck["y"] > my_head["y"]:  # Neck is above head, don't move up
+    if my_neck["y"] > my_head["y"]:  # Neck is above head, don't move up
         is_move_safe["up"] = False
         print("neck above head")
     # TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
@@ -73,13 +73,13 @@ def move(game_state: typing.Dict) -> typing.Dict:
     if my_head['x'] == board_width - 1:
         is_move_safe['right'] = False
         print("board to the right of head")
-    elif my_head['x'] == 0:
+    if my_head['x'] == 0:
         is_move_safe['left'] = False
         print("board to the left of head")
     if my_head['y'] == board_height - 1:
         is_move_safe['up'] = False
         print("board above head")
-    elif my_head['y'] == 0:
+    if my_head['y'] == 0:
         is_move_safe['down'] = False
         print("board below head")
 
@@ -91,13 +91,13 @@ def move(game_state: typing.Dict) -> typing.Dict:
             if (my_head['x'] == body_part['x'] - 1 and my_head['y'] == body_part['y']):
                 is_move_safe['right'] = False
                 print("body right of head")
-            elif (my_head['x'] == body_part['x'] + 1 and my_head['y'] == body_part['y']):
+            if (my_head['x'] == body_part['x'] + 1 and my_head['y'] == body_part['y']):
                 is_move_safe['left'] = False
                 print("body left of head")
             if (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] - 1):
                 is_move_safe['up'] = False
                 print("body above head")
-            elif (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] + 1):
+            if (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] + 1):
                 is_move_safe['down'] = False
                 print("body below head")
     # TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
@@ -118,8 +118,32 @@ def move(game_state: typing.Dict) -> typing.Dict:
     next_move = random.choice(safe_moves)
 
     # TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-    # food = game_state['board']['food']
-
+    foods = game_state['board']['food']
+    for i, food in enumerate(foods):
+        if (my_head['x'] == body_part['x'] - 1 and my_head['y'] == body_part['y']):
+            is_move_safe['right'] = True
+            is_move_safe['left'] = False
+            is_move_safe['up'] = False
+            is_move_safe['down'] = False
+            print("food right of head")
+        if (my_head['x'] == body_part['x'] + 1 and my_head['y'] == body_part['y']):
+            is_move_safe['right'] = False
+            is_move_safe['left'] = True
+            is_move_safe['up'] = False
+            is_move_safe['down'] = False
+            print("food left of head")
+        if (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] - 1):
+            is_move_safe['right'] = False
+            is_move_safe['left'] = False
+            is_move_safe['up'] = True
+            is_move_safe['down'] = False
+            print("food above head")
+        if (my_head['x'] == body_part['x'] and my_head['y'] == body_part['y'] + 1):
+            is_move_safe['right'] = False
+            is_move_safe['left'] = False
+            is_move_safe['up'] = False
+            is_move_safe['down'] = True
+            print("food below head")
     print(f"MOVE {game_state['turn']}: {next_move}")
     return {"move": next_move}
 
