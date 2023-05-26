@@ -60,9 +60,11 @@ Continue with the [Battlesnake Quickstart Guide](https://docs.battlesnake.com/qu
 
 ## Upcoming Features
 
-There is currently a very simple brain for this snake, based on conditional flows alone. I want to add:
+There is currently a very simple brain for this snake, based on conditional flows alone. I would like to add:
+
 1) don't get into dead-end streets;
 2) seek food;
 3) don't collide with bigger snakes;
 4) kill smaller snakes.
+
 as the upcoming new features. 
